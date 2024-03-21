@@ -6,7 +6,7 @@ export const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'http://127.0.0.1:3000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: {
         email: email,
         password: password
@@ -28,7 +28,7 @@ export const deleterequest = async id => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `http://127.0.0.1:3000/api/v1/booking/cart-delete/${id}`
+      url: `/api/v1/booking/cart-delete/${id}`
     });
 
     if (!res.data) {

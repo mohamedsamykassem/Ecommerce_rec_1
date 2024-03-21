@@ -25,7 +25,7 @@ export const booktour = async (tourId, type, quantity, phone) => {
 
     // Send request to create Checkout session
     const response = await axios.post(
-      `http://127.0.0.1:3000/api/v1/booking/checkoutseccion/${type}`
+      `/api/v1/booking/checkoutseccion/${type}`
       // {
       //   headers: {
       //     'Content-Type': 'application/json'

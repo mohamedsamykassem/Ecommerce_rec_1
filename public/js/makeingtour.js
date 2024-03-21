@@ -5,7 +5,7 @@ import { showAlert } from './alerts';
 export const makingtour = async data => {
   console.log(data);
   try {
-    const res = await axios.post('http://127.0.0.1:3000/api/v1/tours/', {});
+    const res = await axios.post('/api/v1/tours/', {});
     if (res.data.status === 'success') {
       showAlert('success', 'YOUR PRODECT  MAKED SUCCESSFLY  ✔');
       window.setTimeout(() => {
