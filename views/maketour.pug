@@ -1,0 +1,52 @@
+extends base
+
+block content 
+    .user-view
+        .user-view__content
+            .user-view__form-container
+                h2.heading-secondary.ma-bt-md Your account settings
+                form.form.form-user-mange(id="maketour" enctype="multipart/form-data")
+                    .form__group
+                        label.form__label(for='name') Name
+                        input#name.form__input(type='text', placeholder='Enter tour name', required)
+                    //.form__group.ma-bt-md
+                        label.form__label(for='Duration') Duration
+                        input#Duration.form__input(type='text', placeholder='Enter duration', required)
+                    //.form__group
+                        label.form__label(for='maxGroupSize') Max Group Size
+                        input#maxGroupSize.form__input(type='number', placeholder='Enter max group size', required)
+                    //.form__group
+                        label.form__label(for='difficulty') Difficulty
+                        input#difficulty.form__input(type='text', placeholder='Enter difficulty', required)
+                    .form__group
+                        label.form__label(for='ratingsAverage') Ratings Average
+                        input#ratingsAverage.form__input(type='number', placeholder='Enter average rating', required)
+                    .form__group
+                        label.form__label(for='ratingsQuantity') Ratings Quantity
+                        input#ratingsQuantity.form__input(type='number', placeholder='Enter rating quantity', required)
+                    .form__group
+                        label.form__label(for='price') Price
+                        input#price.form__input(type='number', placeholder='Enter price', required)
+                    .form__group
+                        label.form__label(for='description') Description
+                        input#description.form__input(type='text', placeholder='Enter description', required)
+                    .form__group
+                        label.form__label(for='summary') Summary
+                        input#summary.form__input(type='text', placeholder='Enter summary', required)
+                    .form__group
+                        label.form__label(for='stoke') stoke
+                        input#stoke.form__input(type='number', placeholder=' stoke quantity', required)
+                    .form__group.form__photo-upload
+                        label(for="imageCover") Choose Cover  Photo
+                        input.form__input(type='file', accept='image/*', id='imageCover', name='imageCover', required)
+                    .form__group.form__photo-upload
+                        label(for="images1") Choose Additional Image 1
+                        input.form__input(type='file', accept='image/*', id='images1', name='images1')
+                    .form__group.form__photo-upload
+                        label(for="images2") Choose Additional Image 2
+                        input.form__input(type='file', accept='image/*', id='images2', name='images2')
+                    .form__group.form__photo-upload
+                        label(for="images3") Choose Additional Image 3
+                        input.form__input(type='file', accept='image/*', id='images3', name='images3')
+                    .form__group.right
+                        button.btn.btn--small.btn--green(type='submit') Save Settings

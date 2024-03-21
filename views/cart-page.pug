@@ -1,0 +1,85 @@
+extends  base
+block content
+    main.main
+        .card-container
+
+            each tour in tours 
+                .card
+                    .card__header
+                        .card__picture
+                            .card__picture-overlay &nbsp;
+                            img.card__picture-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
+                        h3.heading-tertirary
+                            span=tour.name
+
+                    .card__details
+                        h4.card__sub-heading=`${tour.difficulty} ${tour.duration}-day tour`
+                        p.card__text= tour.summary
+                        //.card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-map-pin')
+                            span Banff, Canada
+                        //.card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-calendar')
+                            span April 2021
+                        //.card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-flag')
+                            |       
+                            span 3 stops
+                        //.card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-user')
+                            span 25 people
+
+                    .card__footer
+                        p
+                            span.card__footer-value=`${tour.price}${"    "} SAR`
+                            | 
+                            span.card__footer-text per peice
+                        p.card__ratings
+                            span.card__footer-value= tour.ratingsAverage
+                            |  
+                            span.card__footer-text= `rating(${tour.ratingsQuantity})`
+                            br
+                            
+                            -const index = tours.findIndex(t => t._id === tour._id)
+                                each book in booking
+                                    if book.tour.toString() === tours[index]._id.toString()
+                                        
+                                        input.card__quantity(type="number" min="1" value=parsInt(book.quantity) placeholder="Enter quantity..."  data-id=`${book.id}`)
+                                        input(type="submit" , value="Submit" style="display: none;")
+                                        a.btn.btn--green.btn--small(data-id=`${book.id}` , id=`delete-btn-${index}`) delete 
+    if user
+    form#checkout-form
+        label(for="currency") currency 
+        select#currency(name='currency')
+            option(value='usd') USD
+            option(value='SAR') SAR
+        button.btn.btn--green.btn--small--by(type='submit' , id="buy_now") BUY NOW !                           
+    //a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+    //- if user
+    //-     form#checkout-form(data-tour-id=`${tour.id}`)
+    //-         label(for='currency') 
+    //-         select#currency(name='currency')
+    //-             option(value='usd') USD
+    //-             option(value='SAR') SAR
+    //-             br
+    //-         button.btn.btn--green.span-all-rows#book_id( type='submit') BUY NOW !
+    // Add more options for other currencies as needed
+    //button(type='submit') Checkout
+    //- input#quantity(type='number' name='quantity' min='1' value='1') 
+    //- br
+    //- br
+
+
+
+    //- <label for="phone">Phone Number:</label>
+    //- <input type="number" id="phone" name="phone">
+
+
+
+
+
+

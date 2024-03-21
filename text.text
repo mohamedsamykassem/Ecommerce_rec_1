@@ -1,0 +1,207 @@
+if (maketour)
+//   maketour.addEventListener('submit', async e => {
+//     e.preventDefault();
+//     const form = document.getElementById('maketour');
+
+//     const name = document.getElementById('name').value;
+//     const duration = document.getElementById('Duration').value;
+//     const maxGroupSize = document.getElementById('maxGroupSize').value;
+//     const difficulty = document.getElementById('difficulty').value;
+//     const ratingsAverage = document.getElementById('ratingsAverage').value;
+//     const ratingsQuantity = document.getElementById('ratingsQuantity').value;
+//     const price = document.getElementById('price').value;
+//     const description = document.getElementById('description').value;
+//     const summary = document.getElementById('summary').value;
+//     // const imageCover = document.getElementById('imageCover').files[0];
+//     // const images = document.getElementById('images').files[0];
+//     // const images = document.getElementById('images').files[0];
+//     // const images = document.getElementById('images').files[0];
+//     const formData = {
+//       name,
+//       duration,
+//       maxGroupSize,
+//       difficulty,
+//       ratingsAverage,
+//       ratingsQuantity,
+//       price,
+//       description,
+//       summary,
+//       imageCover: 'tour_5c88fa8cf4afda39709c2955_1709767006258_cover.jpeg',
+//       images: 'tour_5c88fa8cf4afda39709c2955_1709767006258_cover.jpeg',
+//       images: 'tour_5c88fa8cf4afda39709c2955_1709767006258_cover.jpeg',
+//       images: 'tour_5c88fa8cf4afda39709c2955_1709767006258_cover.jpeg'
+//     };
+
+//     // );
+
+//     try {
+//       await axios.post('http://127.0.0.1:3000/api/v1/tours/', formData,{    headers: {
+          'Content-Type': 'multipart/form-data'
+        }});
+//     } catch (err) {
+//       console.log(err);
+//     }
+
+//     // makingtour({ ...formData });
+//     console.log([...formData]);
+//   });
+
+
+
+
+            form.form.form-user-mange(id="maketour" enctype="multipart/form-data")
+                .form__group
+                    label.form__label(for='name') Name
+                    input#name.form__input(type='text', value="xx", required)
+                .form__group.ma-bt-md
+                    label.form__label(for='Duration') Duration
+                    input#Duration.form__input(type='text', value="5", required)
+                .form__group
+                    label.form__label(for='maxGroupSize') maxGroupSize
+                    input#maxGroupSize.form__input(type='text', value="5", required)
+                .form__group
+                    label.form__label(for='difficulty') difficulty
+                    input#difficulty.form__input(type='text', value="easy", required)
+                .form__group
+                    label.form__label(for='ratingsAverage') ratingsAverage
+                    input#ratingsAverage.form__input(type='number', value="5", required)
+                .form__group
+                    label.form__label(for='ratingsQuantity') ratingsQuantity
+                    input#ratingsQuantity.form__input(type='text', value="5", required)
+                    .form__group
+                    label.form__label(for='price') price
+                    input#price.form__input(type='text', value="55", required)
+                .form__group
+                    label.form__label(for='description') description
+                    input#description.form__input(type='text', value="fdfdf", required)
+                .form__group
+                    label.form__label(for='summary') summary
+                    input#summary.form__input(type='text', value="fddfd", required)
+                .form__group.form__photo-upload
+                    img.form__user-photo(src=`/img/users/${user.photo}`, alt='User photo')
+                    input.form__upload(type='file' , accept='image/*' ,id='imageCover',  name='imageCover')
+                    label(for="imageCover")  Choose_new_photo
+                .form__group.form__photo-upload
+                    input.form__upload(type='file' , accept='image/*' ,id='images1',  name='images')
+                    label(for="images1") img 1
+                .form__group.form__photo-upload
+                    input.form__upload(type='file' , accept='image/*' ,id='images2',  name='images')
+                    label(for="image2") img 2
+                .form__group.form__photo-upload
+                    input.form__upload(type='file' , accept='image/*' ,id='images3',  name='images')
+                    label(for="image3")  img 3
+                
+                    
+
+                .form__group.right
+                    button.btn.btn--small.btn--green Save settings
+
+
+
+                    javascript
+Copy code
+const stripe = Stripe('your_public_key');
+stripe.redirectToCheckout({
+  sessionId: 'your_session_id',
+  billingAddressCollection: 'auto', // or 'required'
+  billingAddressCollection: {
+    phone: 'required',
+  },
+});
+
+
+<!-- HTML code for currency selection dropdown -->
+<form id="checkout-form">
+  <label for="currency">Select currency:</label>
+  <select id="currency" name="currency">
+    <option value="usd">USD</option>
+    <option value="eur">EUR</option>
+    <!-- Add more options for other currencies as needed -->
+  </select>
+  <button type="submit">Checkout</button>
+</form>
+
+
+// JavaScript code to handle form submission
+document.getElementById("checkout-form").addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent default form submission
+
+  const selectedCurrency = document.getElementById("currency").value;
+
+  // Send selected currency to the server
+  fetch('/create-checkout-session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ currency: selectedCurrency }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Redirect to Stripe Checkout
+    window.location.href = data.session.url;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});
+
+
+
+
+
+
+.user-view__form-container {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 1rem 5rem 0rem 1rem;
+}
+
+
+
+
+// Assume this is your webhook endpoint for handling successful payments
+exports.stripeWebhook = async (req, res) => {
+  const payload = req.body;
+
+  // Verify the webhook signature
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed.', err);
+    return res.sendStatus(400);
+  }
+
+  // Handle the event
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    // Extract relevant information from the session object
+    const lineItems = session.display_items;
+    const tourIds = lineItems.map(item => item.client_reference_id);
+    const quantities = lineItems.map(item => item.quantity);
+
+    // Update stock for each booked item
+    await Promise.all(tourIds.map(async (tourId, index) => {
+      const tour = await Tour.findById(tourId);
+      if (!tour) {
+        // Handle if tour not found
+        console.error('Tour not found for id:', tourId);
+        return;
+      }
+      // Decrease the stock by the booked quantity
+      tour.stock -= quantities[index];
+      await tour.save();
+    }));
+
+    // Respond to Stripe to acknowledge receipt of the event
+    res.json({ received: true });
+  } else {
+    // Handle other event types if necessary
+    console.log(`Unhandled event type: ${event.type}`);
+    res.json({ received: false });
+  }
+};
