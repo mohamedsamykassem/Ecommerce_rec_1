@@ -97,20 +97,36 @@ exports.createbooking = catchasync(async (req, res, next) => {
 // });
 
 exports.getbooking = async (req, res, next) => {
-  const booking = await Booking.find({ user: req.user.id });
-  const tourides = booking.map(el => el.tour); // with this line we get all tour id for this user
-  const tours = await Tour.find({ _id: { $in: tourides } }); //  get all tour from tours data base
-  // the we should render them in cart page
-  if (tours.length === 0) {
-    return res.status(200).render('empty-cart', {
-      tittle: 'Empty cart'
+  try {
+    const booking = await Booking.find({ user: req.user.id });
+    const tourides = booking.map(el => el.tour); // with this line we get all tour id for this user
+    const tours = await Tour.find({ _id: { $in: tourides } }); //  get all tour from tours data base
+    //the we should render them in cart page
+    // if (tours.length === 0) {
+    //   return res.status(200).render('empty-cart', {
+    //     tittle: 'Empty cart'
+    //   });
+    // } else {
+    //   return res.status(200).render('cart-page', {
+    //     tittle: 'cart page ',
+    //     tours,
+    //     booking
+    //   });
+    // }
+    if (tours) {
+      res.status(200).render('testpage', {
+        tittle: 'cart page',
+        tours,
+        booking
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: 'error',
+      error: err
     });
   }
-  res.status(200).render('cart-page', {
-    tittle: 'cart page ',
-    tours,
-    booking
-  });
 };
 
 // // Fetch all tours from the database based on tourIds
@@ -123,3 +139,28 @@ exports.getbooking = async (req, res, next) => {
 
 exports.deletebooking = factory.deletone(Booking);
 exports.updatebooking = factory.Updateone(Booking);
+// exports.getbooking = async (req, res, next) => {
+//   try {
+//     const booking = await Booking.find({ user: req.user.id });
+//     const tourIds = booking.map(el => el.tour); // Retrieve all tour IDs for this user
+
+//     // Fetch all tours based on the IDs obtained
+//     const tours = await Tour.find({ _id: { $in: tourIds } });
+
+//     // Render the appropriate view based on whether tours were found
+//     if (tours.length === 0) {
+//       return res.status(200).render('empty-cart', {
+//         title: 'Empty cart'
+//       });
+//     } else {
+//       return res.status(200).render('cart-page', {
+//         tittle: 'Cart page',
+//         tours,
+//         booking
+//       });
+//     }
+//   } catch (error) {
+//     // Pass any errors to the error handling middleware
+//     next(error);
+//   }
+// };
