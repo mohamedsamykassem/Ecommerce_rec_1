@@ -196,7 +196,7 @@ exports.webhook_checkout = async (req, res, next) => {
         try {
           const tour = await Tour.findByIdAndUpdate(
             tourId,
-            { $inc: { stock: -quantities[index] } }, // Decrement stock by quantities[index]
+            { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
             { new: true, runValidators: true }
           );
         } catch (error) {
