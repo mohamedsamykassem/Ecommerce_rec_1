@@ -72,10 +72,7 @@ if (maketour) {
 
     try {
       // Send POST request with FormData
-      const response = await axios.post(
-        'http://127.0.0.1:3000/api/v1/tours/',
-        form
-      );
+      const response = await axios.post('/api/v1/tours/', form);
 
       // Handle success
       showAlert('success', 'YOUR PRODUCT WAS CREATED SUCCESSFULLY ✔');
