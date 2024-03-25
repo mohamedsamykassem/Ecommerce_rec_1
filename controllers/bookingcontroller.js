@@ -140,6 +140,28 @@ exports.getbooking = async (req, res, next) => {
 exports.deletebooking = factory.deletone(Booking);
 exports.updatebooking = factory.Updateone(Booking);
 
+const createbookingcheckout = async session => {
+  // Extract relevant information from the session object
+  const lineItems = session.display_items;
+  const tourIds = lineItems.map(item => item.client_reference_id);
+  const quantities = lineItems.map(item => item.quantity);
+
+  // Update stock for each booked item
+  await Promise.all(
+    tourIds.map(async (tourId, index) => {
+      try {
+        const tour = await Tour.findByIdAndUpdate(
+          tourId,
+          { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
+          { new: true, runValidators: true }
+        );
+      } catch (error) {
+        console.error(`Error updating stock for tour ${tourId}:`, error);
+      }
+    })
+  );
+};
+
 // Assume this is your webhook endpoint for handling successful payments
 exports.webhook_checkout = async (req, res, next) => {
   const payload = req.body;
@@ -158,58 +180,9 @@ exports.webhook_checkout = async (req, res, next) => {
     console.error('Webhook signature verification failed.', err);
     return res.sendStatus(400);
   }
-
   // Handle the event
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
+  if (event.type === 'checkout.session.completed')
+    createbookingcheckout(event.data.object);
 
-    // Extract relevant information from the session object
-    const lineItems = session.display_items;
-    const tourIds = lineItems.map(item => item.client_reference_id);
-    const quantities = lineItems.map(item => item.quantity);
-
-    // Update stock for each booked item
-    await Promise.all(
-      //tourIds.map(async (tourId, index) => {
-      // const tour = await Tour.findById(tourId);
-      // if (!tour) {
-      //   // Handle if tour not found
-      //   console.error('Tour not found for id:', tourId);
-      //   return;
-      // }
-      // // Decrease the stock by the booked quantity
-      // tour.stoke -= quantities[index];
-      // await tour.save();
-      // const tour = await Tour.findByIdAndUpdate(
-      //   tourId,
-      //   {
-      //     stoke: (tour.stoke -= quantities[index])
-      //   },
-      //   {
-      //     new: true,
-      //     runValidators: true
-      //   }
-      // );
-      // })
-      // );
-      tourIds.map(async (tourId, index) => {
-        try {
-          const tour = await Tour.findByIdAndUpdate(
-            tourId,
-            { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
-            { new: true, runValidators: true }
-          );
-        } catch (error) {
-          console.error(`Error updating stock for tour ${tourId}:`, error);
-        }
-      })
-    );
-
-    // Respond to Stripe to acknowledge receipt of the event
-    res.json({ received: true });
-  } else {
-    // Handle other event types if necessary
-    console.log(`Unhandled event type: ${event.type}`);
-    res.json({ received: false });
-  }
+  return res.status(200).json({ received: true });
 };
