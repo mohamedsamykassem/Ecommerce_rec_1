@@ -139,31 +139,6 @@ exports.getbooking = async (req, res, next) => {
 
 exports.deletebooking = factory.deletone(Booking);
 exports.updatebooking = factory.Updateone(Booking);
-// exports.getbooking = async (req, res, next) => {
-//   try {
-//     const booking = await Booking.find({ user: req.user.id });
-//     const tourIds = booking.map(el => el.tour); // Retrieve all tour IDs for this user
-
-//     // Fetch all tours based on the IDs obtained
-//     const tours = await Tour.find({ _id: { $in: tourIds } });
-
-//     // Render the appropriate view based on whether tours were found
-//     if (tours.length === 0) {
-//       return res.status(200).render('empty-cart', {
-//         title: 'Empty cart'
-//       });
-//     } else {
-//       return res.status(200).render('cart-page', {
-//         tittle: 'Cart page',
-//         tours,
-//         booking
-//       });
-//     }
-//   } catch (error) {
-//     // Pass any errors to the error handling middleware
-//     next(error);
-//   }
-// };
 
 // Assume this is your webhook endpoint for handling successful payments
 exports.webhook_checkout = async (req, res, next) => {
@@ -196,15 +171,25 @@ exports.webhook_checkout = async (req, res, next) => {
     // Update stock for each booked item
     await Promise.all(
       tourIds.map(async (tourId, index) => {
-        const tour = await Tour.findById(tourId);
-        if (!tour) {
-          // Handle if tour not found
-          console.error('Tour not found for id:', tourId);
-          return;
-        }
-        // Decrease the stock by the booked quantity
-        tour.stock -= quantities[index];
-        await tour.save();
+        // const tour = await Tour.findById(tourId);
+        // if (!tour) {
+        //   // Handle if tour not found
+        //   console.error('Tour not found for id:', tourId);
+        //   return;
+        // }
+        // // Decrease the stock by the booked quantity
+        // tour.stoke -= quantities[index];
+        // await tour.save();
+        const tour = await Tour.findByIdAndUpdate(
+          tourId,
+          {
+            stoke: (tour.stoke -= quantities[index])
+          },
+          {
+            new: true,
+            runValidators: true
+          }
+        );
       })
     );
 
