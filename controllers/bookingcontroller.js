@@ -166,7 +166,7 @@ exports.updatebooking = factory.Updateone(Booking);
 // };
 
 // Assume this is your webhook endpoint for handling successful payments
-exports.webhook_checkout = async (req, res) => {
+exports.webhook_checkout = async (req, res, next) => {
   const payload = req.body;
 
   // Verify the webhook signature
