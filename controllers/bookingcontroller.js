@@ -170,26 +170,38 @@ exports.webhook_checkout = async (req, res, next) => {
 
     // Update stock for each booked item
     await Promise.all(
+      //tourIds.map(async (tourId, index) => {
+      // const tour = await Tour.findById(tourId);
+      // if (!tour) {
+      //   // Handle if tour not found
+      //   console.error('Tour not found for id:', tourId);
+      //   return;
+      // }
+      // // Decrease the stock by the booked quantity
+      // tour.stoke -= quantities[index];
+      // await tour.save();
+      // const tour = await Tour.findByIdAndUpdate(
+      //   tourId,
+      //   {
+      //     stoke: (tour.stoke -= quantities[index])
+      //   },
+      //   {
+      //     new: true,
+      //     runValidators: true
+      //   }
+      // );
+      // })
+      // );
       tourIds.map(async (tourId, index) => {
-        // const tour = await Tour.findById(tourId);
-        // if (!tour) {
-        //   // Handle if tour not found
-        //   console.error('Tour not found for id:', tourId);
-        //   return;
-        // }
-        // // Decrease the stock by the booked quantity
-        // tour.stoke -= quantities[index];
-        // await tour.save();
-        const tour = await Tour.findByIdAndUpdate(
-          tourId,
-          {
-            stoke: (tour.stoke -= quantities[index])
-          },
-          {
-            new: true,
-            runValidators: true
-          }
-        );
+        try {
+          const tour = await Tour.findByIdAndUpdate(
+            tourId,
+            { $inc: { stock: -quantities[index] } }, // Decrement stock by quantities[index]
+            { new: true, runValidators: true }
+          );
+        } catch (error) {
+          console.error(`Error updating stock for tour ${tourId}:`, error);
+        }
       })
     );
 
