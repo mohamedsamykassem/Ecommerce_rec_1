@@ -28,6 +28,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(cors());
 app.options('*', cors());
 app.use(helmet());
+app.post(
+  'webhook_checkout',
+  bodyparser.raw({ type: 'application/json' }),
+  bookingcontroller.webhook_checkout
+);
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -41,11 +46,7 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!'
 });
 app.use('/api', limiter);
-app.post(
-  'webhook_checkout',
-  bodyparser.raw({ type: 'application/json' }),
-  bookingcontroller.webhook_checkout
-);
+
 // Body parser, reading data from body into req.body
 // { limit: '10kb' }
 app.use(express.json());
