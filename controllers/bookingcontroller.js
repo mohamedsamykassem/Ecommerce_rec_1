@@ -34,6 +34,7 @@ exports.getseccion = catchasync(async (req, res, next) => {
       },
       client_reference_id: req.params.tourId,
       line_items: tour.map((tour, index) => ({
+        id: tour.id,
         price_data: {
           currency: 'SAR',
           product_data: {
@@ -149,7 +150,7 @@ const createbookingcheckout = async session => {
 
     // Extract relevant information from the session object
     const lineItems = session.display_items;
-    const tourIds = lineItems.map(item => item.client_reference_id);
+    const tourIds = lineItems.map(item => item.id);
     const quantities = lineItems.map(item => item.quantity);
 
     // Update stock for each booked item
