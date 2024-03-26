@@ -189,9 +189,11 @@ exports.webhook_checkout = async (req, res) => {
     console.error('Webhook signature verification failed.', err);
     return res.sendStatus(400);
   }
+
   // Handle the event
-  if (event.type === 'checkout.session.completed')
-    createbookingcheckout(event.data.object);
+  if (event.type === 'checkout.session.completed') {
+    await createBookingCheckout(event.data.object);
+  }
 
   return res.status(200).json({ received: true });
 };
