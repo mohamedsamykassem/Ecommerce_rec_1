@@ -33,12 +33,17 @@ export const booktour = async (tourId, type, quantity, phone) => {
       //   body: JSON.stringify({ phone: sanitizedPhone.toString() })
       // }
     );
-
     console.log(response);
+    const sessions = response.data.sessions; // Assuming the response contains an array of sessions
 
-    await stripe.redirectToCheckout({
-      sessionId: response.data.session.id
-    });
+    // Redirect to Checkout for each session
+    await Promise.all(
+      sessions.map(async session => {
+        await stripe.redirectToCheckout({
+          sessionId: session.id
+        });
+      })
+    );
   } catch (error) {
     console.error('Error fetching session:', error);
   }

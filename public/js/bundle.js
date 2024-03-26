@@ -5713,13 +5713,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var stripePublicKey = 'pk_test_51OrozaRoj4P6lRccNBJsB4btZJYggARLKM4GqzxCFdnmtzwPp0HRa9RIdMHhsbrHBvkfY9bg0fk0SHNpLaAtDa1U00YbsqLyAq';
 var stripe = Stripe(stripePublicKey);
 var booktour = exports.booktour = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(tourId, type, quantity, phone) {
-    var response;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(tourId, type, quantity, phone) {
+    var response, sessions;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          _context.prev = 0;
-          _context.next = 3;
+          _context2.prev = 0;
+          _context2.next = 3;
           return _axios.default.post("/api/v1/booking/checkoutseccion/".concat(type) // {
           //   headers: {
           //     'Content-Type': 'application/json'
@@ -5728,24 +5728,42 @@ var booktour = exports.booktour = /*#__PURE__*/function () {
           // }
           );
         case 3:
-          response = _context.sent;
+          response = _context2.sent;
           console.log(response);
-          _context.next = 7;
-          return stripe.redirectToCheckout({
-            sessionId: response.data.session.id
-          });
-        case 7:
-          _context.next = 12;
+          sessions = response.data.sessions; // Assuming the response contains an array of sessions
+          // Redirect to Checkout for each session
+          _context2.next = 8;
+          return Promise.all(sessions.map( /*#__PURE__*/function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(session) {
+              return _regeneratorRuntime().wrap(function _callee$(_context) {
+                while (1) switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.next = 2;
+                    return stripe.redirectToCheckout({
+                      sessionId: session.id
+                    });
+                  case 2:
+                  case "end":
+                    return _context.stop();
+                }
+              }, _callee);
+            }));
+            return function (_x5) {
+              return _ref2.apply(this, arguments);
+            };
+          }()));
+        case 8:
+          _context2.next = 13;
           break;
-        case 9:
-          _context.prev = 9;
-          _context.t0 = _context["catch"](0);
-          console.error('Error fetching session:', _context.t0);
-        case 12:
+        case 10:
+          _context2.prev = 10;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Error fetching session:', _context2.t0);
+        case 13:
         case "end":
-          return _context.stop();
+          return _context2.stop();
       }
-    }, _callee, null, [[0, 9]]);
+    }, _callee2, null, [[0, 10]]);
   }));
   return function booktour(_x, _x2, _x3, _x4) {
     return _ref.apply(this, arguments);
