@@ -141,25 +141,34 @@ exports.deletebooking = factory.deletone(Booking);
 exports.updatebooking = factory.Updateone(Booking);
 
 const createbookingcheckout = async session => {
-  // Extract relevant information from the session object
-  const lineItems = session.display_items;
-  const tourIds = lineItems.map(item => item.client_reference_id);
-  const quantities = lineItems.map(item => item.quantity);
+  try {
+    // Check if session is defined and has the expected structure
+    if (!session || !session.display_items) {
+      throw new Error('Invalid session object');
+    }
 
-  // Update stock for each booked item
-  await Promise.all(
-    tourIds.map(async (tourId, index) => {
-      try {
-        const tour = await Tour.findByIdAndUpdate(
-          tourId,
-          { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
-          { new: true, runValidators: true }
-        );
-      } catch (error) {
-        console.error(`Error updating stock for tour ${tourId}:`, error);
-      }
-    })
-  );
+    // Extract relevant information from the session object
+    const lineItems = session.display_items;
+    const tourIds = lineItems.map(item => item.client_reference_id);
+    const quantities = lineItems.map(item => item.quantity);
+
+    // Update stock for each booked item
+    await Promise.all(
+      tourIds.map(async (tourId, index) => {
+        try {
+          const tour = await Tour.findByIdAndUpdate(
+            tourId,
+            { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
+            { new: true, runValidators: true }
+          );
+        } catch (error) {
+          console.error(`Error updating stock for tour ${tourId}:`, error);
+        }
+      })
+    );
+  } catch (error) {
+    console.error('Error processing session:', error);
+  }
 };
 
 // Assume this is your webhook endpoint for handling successful payments
