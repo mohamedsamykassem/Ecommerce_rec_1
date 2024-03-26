@@ -156,7 +156,7 @@ const createbookingcheckout = async session => {
     await Promise.all(
       tourIds.map(async (tourId, index) => {
         try {
-          const tour = await Tour.findByIdAndUpdate(
+          await Tour.findByIdAndUpdate(
             tourId,
             { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
             { new: true, runValidators: true }
@@ -172,7 +172,7 @@ const createbookingcheckout = async session => {
 };
 
 // Assume this is your webhook endpoint for handling successful payments
-exports.webhook_checkout = async (req, res, next) => {
+exports.webhook_checkout = async (req, res) => {
   const payload = req.body;
 
   // Verify the webhook signature
