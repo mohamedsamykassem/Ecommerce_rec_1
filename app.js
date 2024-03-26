@@ -30,8 +30,8 @@ app.options('*', cors());
 app.use(helmet());
 app.post(
   '/webhook_checkout',
-  bodyparser.raw({ type: 'application/json' }),
-  //express.json(),
+  //bodyparser.raw({ type: 'application/json' }),
+  express.json(),
   bookingcontroller.webhook_checkout
 );
 
