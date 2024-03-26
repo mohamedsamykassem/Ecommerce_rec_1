@@ -7,9 +7,62 @@ const Tour = require('./../models/tourModel');
 const catchasync = require('./../utils/catchAsync');
 const factory = require('./factory');
 
-exports.getseccion = catchasync(async (req, res, next) => {
-  //1 find the tour by id
+// exports.getseccion = catchasync(async (req, res, next) => {
+//   //1 find the tour by id
 
+//   // Find all bookings of the user
+//   const bookings = await Booking.find({ user: req.user.id });
+//   // Extract quantity from each booking
+//   const quantities = bookings.map(booking => booking.quantity);
+//   const tourIds = bookings.map(booking => booking.tour);
+
+//   // Fetch all tours based on the tourIds
+//   const tour = await Tour.find({ _id: { $in: tourIds } });
+
+//   if (!tour.length) {
+//     return next(new AppError('There are no tours for this user.', 404));
+//   }
+
+//   //const currency = req.params.type;
+//   //2 create seccion on server
+//   try {
+//     const session = await stripe.checkout.sessions.create({
+//       payment_method_types: ['card'],
+//       customer_email: req.user.email,
+//       billing_address_collection: {
+//         phone: req.body.phone
+//       },
+//       client_reference_id: req.params.tourId,
+//       line_items: tour.map((tour, index) => ({
+//         price_data: {
+//           currency: 'SAR',
+//           product_data: {
+//             name: tour.name,
+//             description: tour.description
+//           },
+//           unit_amount: tour.price * quantities[index]
+//         },
+//         quantity: quantities[index]
+//       })),
+
+//       mode: 'payment',
+//       success_url: `${req.protocol}://${req.get('host')}/`,
+//       cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
+//     });
+//     res.status(200).json({
+//       status: 'success',
+//       session
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({
+//       status: 'error',
+//       error: err
+//     });
+//   }
+//   //3make response to the clint side
+// });
+exports.getseccion = catchasync(async (req, res, next) => {
   // Find all bookings of the user
   const bookings = await Booking.find({ user: req.user.id });
   // Extract quantity from each booking
@@ -17,50 +70,55 @@ exports.getseccion = catchasync(async (req, res, next) => {
   const tourIds = bookings.map(booking => booking.tour);
 
   // Fetch all tours based on the tourIds
-  const tour = await Tour.find({ _id: { $in: tourIds } });
+  const tours = await Tour.find({ _id: { $in: tourIds } });
 
-  if (!tour.length) {
+  if (!tours.length) {
     return next(new AppError('There are no tours for this user.', 404));
   }
 
-  //const currency = req.params.type;
-  //2 create seccion on server
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer_email: req.user.email,
-      billing_address_collection: {
-        phone: req.body.phone
-      },
-      client_reference_id: req.params.tourId,
-      line_items: tour.map((tour, index) => ({
-        price_data: {
-          currency: 'SAR',
-          product_data: {
-            name: tour.name,
-            description: tour.description
+    // Create a checkout session for each tour
+    const sessions = await Promise.all(
+      tours.map(async (tour, index) => {
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          customer_email: req.user.email,
+          billing_address_collection: {
+            phone: req.body.phone // Ensure req.body.phone contains the correct phone number
           },
-          unit_amount: tour.price * quantities[index]
-        },
-        quantity: quantities[index]
-      })),
+          client_reference_id: tour.id, // Use tour ID as client reference ID
+          line_items: [
+            {
+              price_data: {
+                currency: 'SAR',
+                product_data: {
+                  name: tour.name,
+                  description: tour.description
+                },
+                unit_amount: tour.price * quantities[index]
+              },
+              quantity: quantities[index]
+            }
+          ],
+          mode: 'payment',
+          success_url: `${req.protocol}://${req.get('host')}/`,
+          cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
+        });
+        return session;
+      })
+    );
 
-      mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/`,
-      cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
-    });
     res.status(200).json({
       status: 'success',
-      session
+      sessions
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({
       status: 'error',
-      error: err
+      error: err.message // Send the error message to the client
     });
   }
-  //3make response to the clint side
 });
 
 exports.createbooking = catchasync(async (req, res, next) => {
@@ -69,49 +127,13 @@ exports.createbooking = catchasync(async (req, res, next) => {
   const booking = await Booking.create(req.body);
   res.status(200).redirect('/');
 });
-// exports.createbooking = catchasync(async (req, res, next) => {
-//   req.body.user = req.user.id;
-//   req.body.tour = req.params.tourId;
-//   const booking = await Booking.create(req.body);
-
-//   // Decrease stock for each item booked
-//   const bookedTourIds = booking.map(booking => booking.tour);
-//   const bookedQuantities = booking.map(booking => booking.quantity);
-
-//   // Update stock for each booked item
-//   await Promise.all(
-//     bookedTourIds.map(async (tourId, index) => {
-//       const tour = await Tour.findById(tourId);
-//       if (!tour) {
-//         // Handle if tour not found
-//         return next(new AppError('Tour not found', 404));
-//       }
-//       // Decrease the stock by the booked quantity
-//       tour.stock -= bookedQuantities[index];
-//       await tour.save();
-//     })
-//   );
-
-//   res.status(200).redirect('/');
-// });
 
 exports.getbooking = async (req, res, next) => {
   try {
     const booking = await Booking.find({ user: req.user.id });
     const tourides = booking.map(el => el.tour); // with this line we get all tour id for this user
     const tours = await Tour.find({ _id: { $in: tourides } }); //  get all tour from tours data base
-    //the we should render them in cart page
-    // if (tours.length === 0) {
-    //   return res.status(200).render('empty-cart', {
-    //     tittle: 'Empty cart'
-    //   });
-    // } else {
-    //   return res.status(200).render('cart-page', {
-    //     tittle: 'cart page ',
-    //     tours,
-    //     booking
-    //   });
-    // }
+
     if (tours) {
       res.status(200).render('testpage', {
         tittle: 'cart page',
@@ -127,14 +149,6 @@ exports.getbooking = async (req, res, next) => {
     });
   }
 };
-
-// // Fetch all tours from the database based on tourIds
-// const tourPromises = tours.map(async tour => {
-//   const tourId = typeof tour === 'object' ? tour.id : tour;
-//   return await Tour.findById(tourId);
-// });
-
-// const fetchedTours = await Promise.all(tourPromises);
 
 exports.deletebooking = factory.deletone(Booking);
 exports.updatebooking = factory.Updateone(Booking);

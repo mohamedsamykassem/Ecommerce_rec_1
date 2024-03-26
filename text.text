@@ -262,6 +262,4 @@ exports.stripeWebhook = async (req, res) => {
           mode: 'payment',
           success_url: `${req.protocol}://${req.get('host')}/`,
           cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
-        });
-      })
-    );
+ 
