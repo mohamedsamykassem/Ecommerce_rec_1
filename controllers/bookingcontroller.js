@@ -191,7 +191,7 @@ exports.updatebooking = factory.Updateone(Booking);
 //   }
 // };
 
-const createBookingCheckout = async session => {
+const createbookingcheckout = async session => {
   try {
     // Check if session is defined and has the expected structure
     if (!session || !session.display_items) {
