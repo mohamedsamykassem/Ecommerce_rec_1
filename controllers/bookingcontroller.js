@@ -160,10 +160,16 @@ const createbookingcheckout = async session => {
       throw new Error('Invalid session object');
     }
 
+    console.log('Received session object:', session);
+
     // Extract relevant information from the session object
     const lineItems = session.display_items;
     const tourIds = lineItems.map(item => item.client_reference_id);
     const quantities = lineItems.map(item => item.quantity);
+
+    console.log('Line items:', lineItems);
+    console.log('Tour IDs:', tourIds);
+    console.log('Quantities:', quantities);
 
     // Update stock for each booked item
     await Promise.all(
