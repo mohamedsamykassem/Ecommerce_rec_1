@@ -157,7 +157,8 @@ const createbookingcheckout = async session => {
   try {
     // Check if session is defined and has the expected structure
     if (!session || !session.display_items) {
-      throw new Error('Invalid session object');
+      //throw new Error('Invalid session object');
+      console.log(error);
     }
 
     console.log('Received session object:', session);
