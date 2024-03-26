@@ -89,7 +89,6 @@ exports.getseccion = catchasync(async (req, res, next) => {
           success_url: `${req.protocol}://${req.get('host')}/`,
           cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
         });
-        return session;
       })
     );
 
