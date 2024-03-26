@@ -34,7 +34,6 @@ exports.getseccion = catchasync(async (req, res, next) => {
       },
       client_reference_id: req.params.tourId,
       line_items: tour.map((tour, index) => ({
-        id: tour.id,
         price_data: {
           currency: 'SAR',
           product_data: {
