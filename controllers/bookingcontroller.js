@@ -25,85 +25,42 @@ exports.getseccion = catchasync(async (req, res, next) => {
 
   //const currency = req.params.type;
   //2 create seccion on server
-  // try {
-  //   const session = await stripe.checkout.sessions.create({
-  //     payment_method_types: ['card'],
-  //     customer_email: req.user.email,
-  //     billing_address_collection: {
-  //       phone: req.body.phone
-  //     },
-  //     client_reference_id: req.params.tourId,
-  //     line_items: tour.map((tour, index) => ({
-  //       id: tour.id,
-  //       price_data: {
-  //         currency: 'SAR',
-  //         product_data: {
-  //           name: tour.name,
-  //           description: tour.description
-  //         },
-  //         unit_amount: tour.price * quantities[index]
-  //       },
-  //       quantity: quantities[index]
-  //     })),
-
-  //     mode: 'payment',
-  //     success_url: `${req.protocol}://${req.get('host')}/`,
-  //     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
-  //   });
-  //   res.status(200).json({
-  //     status: 'success',
-  //     session
-  //   });
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(500).json({
-  //     status: 'error',
-  //     error: err
-  //   });
-  // }
   try {
-    // Create a checkout session for each tour
-    const sessions = await Promise.all(
-      tour.map(async (tour, index) => {
-        const session = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          customer_email: req.user.email,
-          billing_address_collection: {
-            phone: req.body.phone // Ensure req.body.phone contains the correct phone number
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer_email: req.user.email,
+      billing_address_collection: {
+        phone: req.body.phone
+      },
+      client_reference_id: req.params.tourId,
+      line_items: tour.map((tour, index) => ({
+        id: tour.id,
+        price_data: {
+          currency: 'SAR',
+          product_data: {
+            name: tour.name,
+            description: tour.description
           },
-          client_reference_id: tour.id, // Use tour ID as client reference ID
-          line_items: [
-            {
-              price_data: {
-                currency: 'SAR',
-                product_data: {
-                  name: tour.name,
-                  description: tour.description
-                },
-                unit_amount: tour.price * quantities[index]
-              },
-              quantity: quantities[index]
-            }
-          ],
-          mode: 'payment',
-          success_url: `${req.protocol}://${req.get('host')}/`,
-          cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
-        });
-      })
-    );
+          unit_amount: tour.price * quantities[index]
+        },
+        quantity: quantities[index]
+      })),
 
+      mode: 'payment',
+      success_url: `${req.protocol}://${req.get('host')}/`,
+      cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
+    });
     res.status(200).json({
       status: 'success',
-      sessions
+      session
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     res.status(500).json({
       status: 'error',
-      error: err.message // Send the error message to the client
+      error: err
     });
   }
-
   //3make response to the clint side
 });
 
