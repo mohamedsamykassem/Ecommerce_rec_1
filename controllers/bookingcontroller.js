@@ -215,7 +215,7 @@ const createbookingcheckout = async session => {
         try {
           await Tour.findByIdAndUpdate(
             tourId,
-            { $inc: { stock: -quantities[index] } }, // Decrement stock by quantities[index]
+            { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
             { new: true, runValidators: true }
           );
         } catch (error) {
