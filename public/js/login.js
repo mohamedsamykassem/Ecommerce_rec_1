@@ -42,3 +42,57 @@ export const deleterequest = async id => {
     showAlert('error', err.response.data.message);
   }
 };
+
+// export const signup = async data => {
+//   console.log(data);
+//   try {
+//     const res = await axios({
+//       method: 'POST',
+//       url: '/api/v1/users/signup',
+//       data
+//     });
+
+//     if (res.data.status === 'success') {
+//       showAlert('success', 'you are login successfly ✔');
+//       window.setTimeout(() => {
+//         window.location.assign('/');
+//       }, 1500);
+//     }
+//   } catch (err) {
+//     //console.log(err.response.data);
+//     console.log(err);
+//     showAlert('error', err);
+//   }
+// };
+// export const signup = async data => {
+//   console.log(data);
+//   try {
+//     const res = await axios({
+//       method: 'POST',
+//       url: '/api/v1/users/signup',
+//       data
+//     });
+//     if (res.status === 200) {
+//       // Successful signup
+//       showAlert('success', 'You have successfully signed up! Redirecting...');
+//       window.setTimeout(() => {
+//         window.location.assign('/');
+//       }, 1500);
+//     } else {
+//       // Handle unexpected response status
+//       showAlert('error', 'Unexpected response status: ' + res.status);
+//     }
+//   } catch (err) {
+//     // Error occurred
+//     let errorMessage = 'An error occurred while signing up';
+//     if (err.response && err.response.data && err.response.data.message) {
+//       // Extract error message from response
+//       errorMessage = err.response.data.message;
+//     } else if (err.message) {
+//       // Use error message from Axios error object
+//       errorMessage = err.message;
+//     }
+//     console.error('Signup error:', err); // Log the full error for debugging
+//     showAlert('error', errorMessage);
+//   }
+// };

@@ -43,7 +43,7 @@ exports.maketour = (req, res) => {
 };
 
 exports.signup = (req, res) => {
-  res.status(200).render('login', {
+  res.status(200).render('signup', {
     tittle: 'signup _page'
   });
 };

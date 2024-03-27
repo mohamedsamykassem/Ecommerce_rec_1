@@ -1,5 +1,5 @@
 /*eslint-disable */
-import { login, deleterequest } from './login';
+import { login, deleterequest, signup } from './login';
 import { updatepassword } from './updatesettings';
 import { makingtour } from './makeingtour';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { showAlert } from './alerts';
 import { booktour } from './stripe';
 
 const loginform = document.querySelector('.form--login');
+const signupform = document.querySelector('.form--signup');
 const updatedfrorm = document.querySelector('.form-user-data');
 const updatedpass = document.querySelector('.form-user-settings');
 const maketour = document.querySelector('.form-user-mange');
@@ -95,6 +96,40 @@ if (loginform)
     const password = document.getElementById('password').value;
     login(email, password);
   });
+
+if (signupform) {
+  signupform.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('password', document.getElementById('password').value);
+    form.append(
+      'passwordConfirm',
+      document.getElementById('passwordConfirm').value
+    );
+
+    try {
+      const response = await axios.post('/api/v1/users/signup', form);
+
+      // Check if the response indicates success
+
+      // Handle success
+      showAlert('success', 'You have successfully signed up! Redirecting...');
+      setTimeout(() => {
+        window.location.assign('/');
+      }, 1500);
+    } catch (error) {
+      // Handle error
+      showAlert(
+        'error',
+        'An error occurred while signing up. Please try again later.'
+      );
+      console.log(error); // Log the error for debugging
+    }
+  });
+}
 
 if (updatedfrorm)
   updatedfrorm.addEventListener('submit', e => {

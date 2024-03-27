@@ -12,7 +12,7 @@ const signToken = id => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res, next) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -27,13 +27,14 @@ const createSendToken = (user, statusCode, res) => {
   // Remove password from output
   user.password = undefined;
 
-  res.status(statusCode).json({
-    status: 'success',
-    token,
-    data: {
-      user
-    }
-  });
+  // res.status(statusCode).json({
+  //   status: 'success',
+  //   token,
+  //   data: {
+  //     user
+  //   }
+  // });
+  next();
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -43,8 +44,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm
   });
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  await new Email(newUser, url).sendwelcom();
+  //const url = `${req.protocol}://${req.get('host')}/me`;
+  //await new Email(newUser, url).sendwelcom();
   createSendToken(newUser, 201, res);
 });
 
@@ -63,7 +64,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, res, next);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {

@@ -5544,6 +5544,60 @@ var deleterequest = exports.deleterequest = /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }();
+
+// export const signup = async data => {
+//   console.log(data);
+//   try {
+//     const res = await axios({
+//       method: 'POST',
+//       url: '/api/v1/users/signup',
+//       data
+//     });
+
+//     if (res.data.status === 'success') {
+//       showAlert('success', 'you are login successfly ✔');
+//       window.setTimeout(() => {
+//         window.location.assign('/');
+//       }, 1500);
+//     }
+//   } catch (err) {
+//     //console.log(err.response.data);
+//     console.log(err);
+//     showAlert('error', err);
+//   }
+// };
+// export const signup = async data => {
+//   console.log(data);
+//   try {
+//     const res = await axios({
+//       method: 'POST',
+//       url: '/api/v1/users/signup',
+//       data
+//     });
+//     if (res.status === 200) {
+//       // Successful signup
+//       showAlert('success', 'You have successfully signed up! Redirecting...');
+//       window.setTimeout(() => {
+//         window.location.assign('/');
+//       }, 1500);
+//     } else {
+//       // Handle unexpected response status
+//       showAlert('error', 'Unexpected response status: ' + res.status);
+//     }
+//   } catch (err) {
+//     // Error occurred
+//     let errorMessage = 'An error occurred while signing up';
+//     if (err.response && err.response.data && err.response.data.message) {
+//       // Extract error message from response
+//       errorMessage = err.response.data.message;
+//     } else if (err.message) {
+//       // Use error message from Axios error object
+//       errorMessage = err.message;
+//     }
+//     console.error('Signup error:', err); // Log the full error for debugging
+//     showAlert('error', errorMessage);
+//   }
+// };
 },{"./alerts":"alerts.js","axios":"../../node_modules/axios/index.js"}],"updatesettings.js":[function(require,module,exports) {
 "use strict";
 
@@ -5784,6 +5838,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; } /*eslint-disable */
 var loginform = document.querySelector('.form--login');
+var signupform = document.querySelector('.form--signup');
 var updatedfrorm = document.querySelector('.form-user-data');
 var updatedpass = document.querySelector('.form-user-settings');
 var maketour = document.querySelector('.form-user-mange');
@@ -5877,6 +5932,50 @@ if (loginform) loginform.addEventListener('submit', function (e) {
   var password = document.getElementById('password').value;
   (0, _login.login)(email, password);
 });
+if (signupform) {
+  signupform.addEventListener('submit', /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+      var form, response;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            e.preventDefault();
+            form = new FormData();
+            form.append('name', document.getElementById('name').value);
+            form.append('email', document.getElementById('email').value);
+            form.append('password', document.getElementById('password').value);
+            form.append('passwordConfirm', document.getElementById('passwordConfirm').value);
+            _context2.prev = 6;
+            _context2.next = 9;
+            return _axios.default.post('/api/v1/users/signup', form);
+          case 9:
+            response = _context2.sent;
+            // Check if the response indicates success
+
+            // Handle success
+            (0, _alerts.showAlert)('success', 'You have successfully signed up! Redirecting...');
+            setTimeout(function () {
+              window.location.assign('/');
+            }, 1500);
+            _context2.next = 18;
+            break;
+          case 14:
+            _context2.prev = 14;
+            _context2.t0 = _context2["catch"](6);
+            // Handle error
+            (0, _alerts.showAlert)('error', 'An error occurred while signing up. Please try again later.');
+            console.log(_context2.t0); // Log the error for debugging
+          case 18:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[6, 14]]);
+    }));
+    return function (_x2) {
+      return _ref2.apply(this, arguments);
+    };
+  }());
+}
 if (updatedfrorm) updatedfrorm.addEventListener('submit', function (e) {
   e.preventDefault();
   var form = new FormData();
@@ -5888,17 +5987,17 @@ if (updatedfrorm) updatedfrorm.addEventListener('submit', function (e) {
   (0, _updatesettings.updatepassword)(form, 'data');
 });
 if (updatedpass) updatedpass.addEventListener('submit', /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
     var CurrentPassword, password, passwordConfirm;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
         case 0:
           e.preventDefault();
           document.querySelector('.btn--small.btn--pass').textContent = 'updating....';
           CurrentPassword = document.getElementById('password-current').value;
           password = document.getElementById('password').value;
           passwordConfirm = document.getElementById('password-confirm').value;
-          _context2.next = 7;
+          _context3.next = 7;
           return (0, _updatesettings.updatepassword)({
             CurrentPassword: CurrentPassword,
             password: password,
@@ -5911,19 +6010,19 @@ if (updatedpass) updatedpass.addEventListener('submit', /*#__PURE__*/function ()
           document.getElementById('password-confirm').value = '';
         case 11:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
-    }, _callee2);
+    }, _callee3);
   }));
-  return function (_x2) {
-    return _ref2.apply(this, arguments);
+  return function (_x3) {
+    return _ref3.apply(this, arguments);
   };
 }());
 if (book_tour) book_tour.addEventListener('submit', /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
     var type;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
         case 0:
           e.preventDefault();
           document.querySelector('.btn.btn--green.btn--small--by').textContent = 'LOADING .....';
@@ -5933,18 +6032,18 @@ if (book_tour) book_tour.addEventListener('submit', /*#__PURE__*/function () {
           type = String(document.getElementById('currency').value); // const quantity = document.getElementById('quantity').value;
           // const phone = document.getElementById('phone').value;
           // const address = document.getElementById('address').value;
-          _context3.next = 5;
+          _context4.next = 5;
           return (0, _stripe.booktour)(type);
         case 5:
           document.querySelector('.btn.btn--green.btn--small--by').textContent = 'BUY NOW !';
         case 6:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
-    }, _callee3);
+    }, _callee4);
   }));
-  return function (_x3) {
-    return _ref3.apply(this, arguments);
+  return function (_x4) {
+    return _ref4.apply(this, arguments);
   };
 }());
 
