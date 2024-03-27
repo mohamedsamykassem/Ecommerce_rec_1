@@ -219,7 +219,7 @@ exports.webhook_checkout = async (req, res) => {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-const createbookingcheckout = catchasync(async session => {
+const createbookingcheckout = catchasync(async (session, req, res, next) => {
   // Check if session is defined and has the expected structure
   if (!session) {
     console.log(error);
