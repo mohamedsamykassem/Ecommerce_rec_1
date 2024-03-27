@@ -222,7 +222,8 @@ exports.webhook_checkout = async (req, res) => {
 const createbookingcheckout = async session => {
   try {
     // Check if session is defined and has the expected structure
-    if (!session || !session.display_items) {
+    if (!session) {
+      console.log(error);
       throw new Error('Invalid session object');
     }
 
