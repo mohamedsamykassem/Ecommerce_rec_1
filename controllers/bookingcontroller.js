@@ -191,6 +191,34 @@ exports.updatebooking = factory.Updateone(Booking);
 //   }
 // };
 
+// Assume this is your webhook endpoint for handling successful payments
+exports.webhook_checkout = async (req, res) => {
+  const payload = req.body;
+
+  // Verify the webhook signature
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      payload,
+      sig,
+      process.env.WBE_HOOKSEC
+    );
+  } catch (err) {
+    console.error('Webhook signature verification failed.', err);
+    return res.sendStatus(400);
+  }
+
+  // Handle the event
+  if (event.type === 'checkout.session.completed') {
+    await createbookingcheckout(event.data.object);
+  }
+
+  return res.status(200).json({ received: true });
+};
+
+////////////////////////////////////////////////////////////////////////////////////////
 const createbookingcheckout = async session => {
   try {
     // Check if session is defined and has the expected structure
@@ -227,30 +255,4 @@ const createbookingcheckout = async session => {
   } catch (error) {
     console.error('Error processing session:', error);
   }
-};
-// Assume this is your webhook endpoint for handling successful payments
-exports.webhook_checkout = async (req, res) => {
-  const payload = req.body;
-
-  // Verify the webhook signature
-  const sig = req.headers['stripe-signature'];
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      payload,
-      sig,
-      process.env.WBE_HOOKSEC
-    );
-  } catch (err) {
-    console.error('Webhook signature verification failed.', err);
-    return res.sendStatus(400);
-  }
-
-  // Handle the event
-  if (event.type === 'checkout.session.completed') {
-    await createbookingcheckout(event.data.object);
-  }
-
-  return res.status(200).json({ received: true });
 };
