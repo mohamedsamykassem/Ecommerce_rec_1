@@ -41,3 +41,9 @@ exports.maketour = (req, res) => {
     tittle: 'maketour_page'
   });
 };
+
+exports.signup = (req, res) => {
+  res.status(200).render('login', {
+    tittle: 'signup _page'
+  });
+};

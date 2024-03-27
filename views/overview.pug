@@ -43,6 +43,7 @@ block content
                             span.card__footer-text= `rating(${tour.ratingsQuantity})`
                     .button_card
                         a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
-                        a.btn.btn--green.btn--small(href=`/api/v1/booking/to-cart/${tour._id}`) Cart         
+                        if user
+                            a.btn.btn--green.btn--small(href=`/api/v1/booking/to-cart/${tour._id}`) Cart         
                             
                         
