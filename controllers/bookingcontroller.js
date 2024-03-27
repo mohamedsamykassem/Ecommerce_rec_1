@@ -219,41 +219,37 @@ exports.webhook_checkout = async (req, res) => {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-const createbookingcheckout = async session => {
-  try {
-    // Check if session is defined and has the expected structure
-    if (!session) {
-      console.log(error);
-      throw new Error('Invalid session object');
-    }
-
-    console.log('Received session object:', session);
-
-    // Extract relevant information from the session object
-    const lineItems = session.display_items;
-    const tourIds = lineItems.map(item => item.client_reference_id);
-    const quantities = lineItems.map(item => item.quantity);
-
-    console.log('Line items:', lineItems);
-    console.log('Tour IDs:', tourIds);
-    console.log('Quantities:', quantities);
-
-    // Update stock for each booked item
-    await Promise.all(
-      tourIds.map(async (tourId, index) => {
-        try {
-          await Tour.findByIdAndUpdate(
-            tourId,
-            { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
-            { new: true, runValidators: true }
-          );
-        } catch (error) {
-          console.error(`Error updating stock for tour ${tourId}:, error`);
-          throw error; // Rethrow the error to ensure it's caught by the outer try-catch block
-        }
-      })
-    );
-  } catch (error) {
-    console.error('Error processing session:', error);
+const createbookingcheckout = catchasync(async session => {
+  // Check if session is defined and has the expected structure
+  if (!session) {
+    console.log(error);
+    throw new Error('Invalid session object');
   }
-};
+
+  console.log('Received session object:', session);
+
+  // Extract relevant information from the session object
+  const lineItems = session.display_items;
+  const tourIds = lineItems.map(item => item.client_reference_id);
+  const quantities = lineItems.map(item => item.quantity);
+
+  console.log('Line items:', lineItems);
+  console.log('Tour IDs:', tourIds);
+  console.log('Quantities:', quantities);
+
+  // Update stock for each booked item
+  await Promise.all(
+    tourIds.map(async (tourId, index) => {
+      try {
+        await Tour.findByIdAndUpdate(
+          tourId,
+          { $inc: { stoke: -quantities[index] } }, // Decrement stock by quantities[index]
+          { new: true, runValidators: true }
+        );
+      } catch (error) {
+        console.error(`Error updating stock for tour ${tourId}:, error`);
+        throw error; // Rethrow the error to ensure it's caught by the outer try-catch block
+      }
+    })
+  );
+});
