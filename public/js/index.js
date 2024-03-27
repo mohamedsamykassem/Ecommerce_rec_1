@@ -1,13 +1,15 @@
 /*eslint-disable */
-import { login, deleterequest, signup } from './login';
+import '@babel/polyfill';
+import axios from 'axios';
+import { login, deleterequest, LOGOUT } from './login';
 import { updatepassword } from './updatesettings';
 import { makingtour } from './makeingtour';
-import axios from 'axios';
 import { showAlert } from './alerts';
 import { booktour } from './stripe';
 
 const loginform = document.querySelector('.form--login');
 const signupform = document.querySelector('.form--signup');
+const logout = document.querySelector('.nav__el--logout');
 const updatedfrorm = document.querySelector('.form-user-data');
 const updatedpass = document.querySelector('.form-user-settings');
 const maketour = document.querySelector('.form-user-mange');
@@ -88,7 +90,7 @@ if (maketour) {
     }
   });
 }
-
+if (logout) logout.addEventListener('click', LOGOUT);
 if (loginform)
   loginform.addEventListener('submit', e => {
     e.preventDefault();
@@ -101,17 +103,18 @@ if (signupform) {
   signupform.addEventListener('submit', async e => {
     e.preventDefault();
 
-    const form = new FormData();
-    form.append('name', document.getElementById('name').value);
-    form.append('email', document.getElementById('email').value);
-    form.append('password', document.getElementById('password').value);
-    form.append(
-      'passwordConfirm',
-      document.getElementById('passwordConfirm').value
-    );
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
 
     try {
-      const response = await axios.post('/api/v1/users/signup', form);
+      const response = await axios.post('/api/v1/users/signup', {
+        name,
+        email,
+        password,
+        passwordConfirm
+      });
 
       // Check if the response indicates success
 

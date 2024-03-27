@@ -42,7 +42,7 @@ exports.maketour = (req, res) => {
   });
 };
 
-exports.signup = (req, res) => {
+exports.getsignup = (req, res) => {
   res.status(200).render('signup', {
     tittle: 'signup _page'
   });

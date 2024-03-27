@@ -12,12 +12,15 @@ export const login = async (email, password) => {
         password: password
       }
     });
+    showAlert('success', 'you are login successfly ✔');
+    window.setTimeout(() => {
+      window.location.assign('/');
+    }, 1500);
 
     if (res.data.status === 'success') {
-      showAlert('success', 'you are login successfly ✔');
       window.setTimeout(() => {
         window.location.assign('/');
-      }, 1500);
+      }, 1);
     }
   } catch (err) {
     console.log(err.response.data);
@@ -40,6 +43,19 @@ export const deleterequest = async id => {
   } catch (err) {
     console.log(err.response.data);
     showAlert('error', err.response.data.message);
+  }
+};
+
+export const LOGOUT = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: '/api/v1/users/logout'
+    });
+    if ((res.data.status = 'success')) location.reload(true);
+  } catch (err) {
+    console.log(err.response);
+    showAlert('error', 'Error logging out! Try again.');
   }
 };
 

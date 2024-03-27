@@ -9,6 +9,6 @@ Router.get('/tour/:slug', authController.islogined, viewcontroller.gettour);
 Router.get('/login', viewcontroller.getlogin);
 Router.get('/me', authController.protect, viewcontroller.acountsetting);
 Router.get('/mange', authController.protect, viewcontroller.maketour);
-Router.get('/signup', viewcontroller.signup);
+Router.all('/signup', viewcontroller.getsignup);
 
 module.exports = Router;

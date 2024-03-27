@@ -12,7 +12,7 @@ const signToken = id => {
   });
 };
 
-const createSendToken = (user, statusCode, res, next) => {
+const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -34,7 +34,9 @@ const createSendToken = (user, statusCode, res, next) => {
   //     user
   //   }
   // });
-  next();
+  res.status(statusCode).render('login', {
+    tittle: 'login page'
+  });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -64,7 +66,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, res, next);
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -281,3 +283,16 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // });
   createSendToken(user, 200, res);
 });
+
+exports.logout = (req, res) => {
+  try {
+    res.cookie('jwt', 'logoutfor deletion', {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      httpOnly: true
+    });
+  } catch (err) {
+    res.status(200).json({
+      status: 'success'
+    });
+  }
+};
