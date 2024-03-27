@@ -212,14 +212,14 @@ exports.webhook_checkout = async (req, res) => {
 
   // Handle the event
   if (event.type === 'checkout.session.completed') {
-    await createbookingcheckout(event.data.object);
+    createbookingcheckout(event.data.object);
   }
 
   return res.status(200).json({ received: true });
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-const createbookingcheckout = catchasync(async (session, req, res, next) => {
+const createbookingcheckout = async session => {
   // Check if session is defined and has the expected structure
   if (!session) {
     console.log(error);
@@ -252,4 +252,4 @@ const createbookingcheckout = catchasync(async (session, req, res, next) => {
       }
     })
   );
-});
+};
