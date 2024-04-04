@@ -195,7 +195,7 @@ exports.updatebooking = factory.Updateone(Booking);
 // Assume this is your webhook endpoint for handling successful payments
 exports.webhook_checkout = async (req, res) => {
   const payload = req.body;
-  Logger.info(req.body);
+  Logger.info(`${req.body}`);
   // Verify the webhook signature
   const sig = req.headers['stripe-signature'];
   let event;
