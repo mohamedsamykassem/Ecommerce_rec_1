@@ -8,7 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieparser = require('cookie-parser');
 const compression = require('compression');
-//const bodyparser = require('body-parser');
+const bodyparser = require('body-parser');
 const cors = require('cors');
 
 const AppError = require('./utils/appError');
@@ -30,8 +30,8 @@ app.options('*', cors());
 app.use(helmet());
 app.post(
   '/webhook_checkout',
-  //bodyparser.raw({ type: 'application/json' }),
-  express.json(),
+  bodyparser.raw({ type: 'application/json' }),
+  //express.json(),
   bookingcontroller.webhook_checkout
 );
 

@@ -115,26 +115,30 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // this to render some pug templet if user is exist or not
-exports.islogined = catchAsync(async (req, res, next) => {
+exports.islogined = async (req, res, next) => {
   if (req.cookies.jwt) {
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET
-    );
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
-      return next();
-    }
+    try {
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
 
-    // 4) Check if user changed password after the token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      // 4) Check if user changed password after the token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next();
+      }
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-    res.locals.user = currentUser;
-    return next();
   }
   return next();
-});
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
@@ -287,7 +291,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 exports.logout = (req, res) => {
   try {
     res.cookie('jwt', 'logoutfor deletion', {
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      expires: new Date(Date.now() + 10 * 1000),
       httpOnly: true
     });
   } catch (err) {

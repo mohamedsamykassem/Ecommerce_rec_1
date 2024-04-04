@@ -9,6 +9,10 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach(el => delete queryObj[el]);
 
+    if (this.queryString.name) {
+      queryObj.name = { $regex: this.queryString.name, $options: 'i' }; // Case-insensitive regex match for name
+    }
+
     // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);

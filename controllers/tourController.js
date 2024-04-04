@@ -12,7 +12,7 @@ const multerStorage = multer.memoryStorage();
 exports.resizephoto = catchAsync(async (req, res, next) => {
   //upload cover
   if (!req.files.imageCover) return next();
-  console.log(req.files);
+  //console.log(req.files);
 
   //req.body.imageCover = `tour_${req.params.id}_${Date.now()}_cover.jpeg`;
   req.body.imageCover = `tour_${Date.now()}_cover.jpeg`;

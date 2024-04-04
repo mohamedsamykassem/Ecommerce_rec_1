@@ -16,6 +16,11 @@ const maketour = document.querySelector('.form-user-mange');
 // const book_tour = document.getElementById('book_id');
 const book_tour = document.getElementById('checkout-form');
 const delete_btn = document.getElementById('delete-btn');
+const searchbox = document.querySelector('.search-box');
+const searchQuery = document.getElementById('search-input').value;
+const searchbtn = document.getElementById('search-btn');
+const loadbtn = document.querySelector('load_button');
+const load_btn = document.getElementById('load-more-btn');
 
 if (maketour) {
   maketour.addEventListener('submit', async e => {
@@ -90,7 +95,20 @@ if (maketour) {
     }
   });
 }
-if (logout) logout.addEventListener('click', LOGOUT);
+if (logout)
+  logout.addEventListener('click', async () => {
+    try {
+      const res = await axios({
+        method: 'GET',
+        url: '/api/v1/users/logout'
+      });
+      if (res.data.status === 'success') location.reload(true);
+    } catch (err) {
+      console.log(err);
+      showAlert('error', 'Error logging out! Try again.');
+    }
+  });
+
 if (loginform)
   loginform.addEventListener('submit', e => {
     e.preventDefault();
@@ -246,4 +264,65 @@ function updateBookingQuantity(id, newQuantity) {
     .catch(error => {
       console.log('Error updating quantity:', error);
     });
+}
+/////////////////////////////////////////////////////////////////
+//search box
+if (searchbtn)
+  searchbtn.addEventListener('click', async () => {
+    const searchQuery = document.getElementById('search-input').value;
+
+    try {
+      // Make an API call to fetch tours with the specified name
+      // const response = await axios.get(`/api/v1/tours?name=${searchQuery}`);
+      // const response = await axios({
+      //   method: 'GET',
+      //   url: `/api/v1/tours?name=${searchQuery}`
+      // });
+      window.location.href = `/api/v1/tours?name=${searchQuery}`;
+      // Handle the response data, update the UI, etc.
+      console.log(response.data.tours); // This will be an array of tours matching the search query
+    } catch (error) {
+      console.error('Error fetching tours:', error);
+    }
+  });
+/////////////////////////////////////////////////////////////////////
+// // remder tours
+// function renderTours(tours) {
+//   const cardContainer = document.querySelector('.card-container');
+//   cardContainer.innerHTML = ''; // Clear existing content
+
+//   // Iterate through the fetched tours and create card elements
+//   tours.forEach(tour => {
+//     const card = document.createElement('div');
+//     card.classList.add('card');
+//     // Create and append card content based on your existing structure
+//     card.innerHTML = `
+//           // Your card content goes here
+//       `;
+//     cardContainer.appendChild(card);
+//   });
+//}
+/////////////////////////////////////////////////////////////////////////////////
+var page = parseInt(localStorage.getItem('currentPage')) || 1;
+var page = page || 1;
+if (load_btn || loadbtn) {
+  console.log(load_btn, page);
+  load_btn.addEventListener('click', async () => {
+    const limit = 9;
+
+    page += 1;
+    console.log(page);
+    try {
+      // const response = await axios.get(
+      //   `/api/v1/tours?page=${page}&limit=${limit}`
+      // );
+      localStorage.setItem('currentPage', page);
+
+      window.location.href = `/api/v1/tours?page=${page}&limit=${limit}`;
+      //console.log(response.data.tours); // This will be an array of tours matching the search query
+      // renderTours(response.data.tours);
+    } catch (err) {
+      console.error('Error fetching tours:', err);
+    }
+  });
 }

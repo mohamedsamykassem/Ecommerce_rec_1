@@ -135,7 +135,7 @@ exports.getbooking = async (req, res, next) => {
     const tours = await Tour.find({ _id: { $in: tourides } }); //  get all tour from tours data base
 
     if (tours) {
-      res.status(200).render('testpage', {
+      res.status(200).render('cart-page', {
         tittle: 'cart page',
         tours,
         booking
