@@ -223,6 +223,7 @@ const createbookingcheckout = async session => {
   // Check if session is defined and has the expected structure
   console.log('iam here to dec the stoke');
   console.log(session);
+  console.log(session.display_items);
   if (!session || !session.display_items) {
     console.error('Invalid session object');
     throw new Error('Invalid session object');
