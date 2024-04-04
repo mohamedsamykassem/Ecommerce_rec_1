@@ -6,7 +6,6 @@ const AppError = require('../utils/appError');
 const Tour = require('./../models/tourModel');
 const catchasync = require('./../utils/catchAsync');
 const factory = require('./factory');
-const { Logger } = require('winston');
 
 // exports.getseccion = catchasync(async (req, res, next) => {
 //   //1 find the tour by id
@@ -195,7 +194,7 @@ exports.updatebooking = factory.Updateone(Booking);
 // Assume this is your webhook endpoint for handling successful payments
 exports.webhook_checkout = async (req, res) => {
   const payload = req.body;
-  Logger.info(`${req.body}`);
+  //Logger.info(`${req.body}`);
   // Verify the webhook signature
   const sig = req.headers['stripe-signature'];
   let event;
