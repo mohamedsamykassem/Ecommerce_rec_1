@@ -221,6 +221,7 @@ exports.webhook_checkout = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////
 const createbookingcheckout = async session => {
   // Check if session is defined and has the expected structure
+  console.log('iam here to dec the stoke');
   console.log(session);
   if (!session || !session.display_items) {
     console.log(error);
