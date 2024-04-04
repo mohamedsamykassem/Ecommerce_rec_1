@@ -28,10 +28,25 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(cors());
 app.options('*', cors());
 app.use(helmet());
+// app.post(
+//   '/webhook_checkout',
+//   bodyparser.raw({ type: 'application/json' }),
+//   //express.json(),
+//   bookingcontroller.webhook_checkout
+// );
 app.post(
   '/webhook_checkout',
   bodyparser.raw({ type: 'application/json' }),
-  //express.json(),
+  (req, res, next) => {
+    // Set a custom timeout value for this route handler
+    const TIMEOUT_VALUE = 60000; // 60 seconds in milliseconds
+    req.setTimeout(TIMEOUT_VALUE, () => {
+      const error = new Error('Request Timeout');
+      error.status = 408; // Request Timeout
+      next(error);
+    });
+    next();
+  },
   bookingcontroller.webhook_checkout
 );
 
