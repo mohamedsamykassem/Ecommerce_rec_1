@@ -10,6 +10,7 @@ const cookieparser = require('cookie-parser');
 const compression = require('compression');
 const bodyparser = require('body-parser');
 const cors = require('cors');
+const winston = require('winston');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -34,12 +35,17 @@ app.use(helmet());
 //   //express.json(),
 //   bookingcontroller.webhook_checkout
 // );
+// Configure Winston logger
+const logger = winston.createLogger({
+  transports: [new winston.transports.File({ filename: 'server.log' })]
+});
 app.post(
   '/webhook_checkout',
   bodyparser.raw({ type: 'application/json' }),
   (req, res, next) => {
     // Set a custom timeout value for this route handler
     const TIMEOUT_VALUE = 60000; // 60 seconds in milliseconds
+    logger.info(`i am i web_route`);
     req.setTimeout(TIMEOUT_VALUE, () => {
       const error = new Error('Request Timeout');
       error.status = 408; // Request Timeout
