@@ -104,7 +104,7 @@ exports.getseccion = catchasync(async (req, res, next) => {
           success_url: `${req.protocol}://${req.get('host')}/`,
           cancel_url: `${req.protocol}://${req.get('host')}/api/v1/booking/cart`
         });
-        //return session;
+        return session;
       })
     );
 
@@ -232,7 +232,7 @@ const createbookingcheckout = async session => {
   ) {
     //|| !session.display_items
     console.error('Invalid session object');
-    throw new Error('Invalid session object');
+    //throw new Error('Invalid session object');
   }
 
   console.log('Received session object:', session);
