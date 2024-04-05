@@ -238,7 +238,7 @@ const createbookingcheckout = async session => {
   console.log('Received session object:', session);
 
   // Extract relevant information from the session object
-  const lineItems = session.display_items; //.display_items
+  const lineItems = session.display_items || []; //.display_items
   const tourIds = lineItems.map(item => item.client_reference_id);
   const quantities = lineItems.map(item => item.quantity);
 
